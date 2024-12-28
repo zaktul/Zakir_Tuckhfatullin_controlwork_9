@@ -1,0 +1,27 @@
+﻿@model ControlWork9.Models.SomeProvider
+
+<h2>Подробности о поставщике услуг</h2>
+
+<div>
+    <h4>Название: @Model.Name</h4>
+</div>
+
+<hr />
+<h3>Пользователи услуг</h3>
+@if (Model.ServiceUsers != null && Model.ServiceUsers.Any())
+{
+    <ul>
+        @foreach (var user in Model.ServiceUsers)
+        {
+            <li>@user.AccountNumber</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Нет пользователей для этого поставщика услуг.</p>
+}
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a> |
+</div>

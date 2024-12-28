@@ -1,0 +1,59 @@
+﻿@model List<SomeProvider>
+
+<h2>Список поставщиков услуг</h2>
+
+<p>
+    @if (ViewBag.Role == "admin")
+    {
+        <a asp-action="Create" class="btn btn-primary">Создать нового</a>
+    }
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        @if (ViewBag.Role == "admin")
+                        {
+                            <a class="btn btn-secondary" asp-action="Detail" asp-route-id="@item.Id">Подробности</a>
+                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Редактировать</a>
+                            <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                        }
+                        
+                        @if (ViewBag.UserProviders != null && ViewBag.UserProviders.Contains(item.Id))
+                        {
+                            <form asp-action="RemoveAccount" asp-controller="ServiceUser" method="post" class="d-inline">
+                                <input type="hidden" name="providerId" value="@item.Id" />
+                                <button type="submit" class="btn btn-danger">Убрать</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="AddAccount" asp-controller="ServiceUser" method="post" class="d-inline">
+                                <input type="hidden" name="providerId" value="@item.Id" />
+                                <button type="submit" class="btn btn-success">Добавить</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2" class="text-center">Нет доступных провайдеров.</td>
+            </tr>
+        }
+    </tbody>
+</table>
