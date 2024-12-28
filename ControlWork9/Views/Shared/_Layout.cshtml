@@ -30,9 +30,12 @@
                         <li class="nav-item ">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Transaction" asp-action="History">Журнал транзакций</a>
                             </li>
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Пользователи</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Пользователи</a>
                             </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="SomeProvider" asp-action="Index">Провайдеры</a>
                             </li>

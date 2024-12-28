@@ -25,7 +25,7 @@ public class AccountController : Controller
             return RedirectToAction("Login", new { returnUrl = returnUrl });
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")] 
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
