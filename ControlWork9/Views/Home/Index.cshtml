@@ -1,8 +1,136 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewBag.Title = "Главная";
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5 text-center">
+    <h1>Добро пожаловать, @User.Identity.Name!</h1>
+    <h3>Ваш баланс: <span id="user-balance">@Model.Balance</span></h3>
+
+    <div class="mt-4">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#topUpModal">Пополнить счет</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transferFundsModal">Перевод средств</button>
+    </div>
 </div>
+
+<div class="modal fade" id="topUpModal" tabindex="-1" aria-labelledby="topUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="topUpModalLabel">Пополнить счет</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="accountNumber">Номер вашего счета</label>
+                    <input type="text" id="accountNumber" class="form-control" placeholder="Введите номер счета">
+                </div>
+                <div class="form-group mt-3">
+                    <label for="topUpAmount">Сумма пополнения</label>
+                    <input type="number" id="topUpAmount" class="form-control" placeholder="Введите сумму пополнения">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-success" onclick="topUpAccount()">Пополнить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="transferFundsModal" tabindex="-1" aria-labelledby="transferFundsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transferFundsModalLabel">Перевод средств</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="receiverAccount">Номер счета получателя</label>
+                    <input type="text" id="receiverAccount" class="form-control" placeholder="Введите номер счета">
+                </div>
+                <div class="form-group mt-3">
+                    <label for="transferAmount">Сумма перевода</label>
+                    <input type="number" id="transferAmount" class="form-control" placeholder="Введите сумму">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" onclick="transferFunds()">Перевести</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function topUpAccount() {
+            const accountNumber = document.getElementById('accountNumber').value;
+            const amount = parseFloat(document.getElementById('topUpAmount').value);
+        
+            if (isNaN(amount) || amount <= 0 || !accountNumber) {
+                alert("Введите корректные данные.");
+                return;
+            }
+        
+            const data = {
+                accountNumber: accountNumber,
+                amount: amount
+            };
+        
+            $.ajax({
+                url: '@Url.Action("Send", "Transaction")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data), 
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload(); 
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (error) {
+                    alert("Произошла ошибка при отправке данных.");
+                }
+            });
+        }
+        
+        function transferFunds() {
+            const accountNumber = document.getElementById('receiverAccount').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+        
+            if (!accountNumber || isNaN(amount) || amount <= 0) {
+                alert("Введите корректные данные.");
+                return;
+            }
+        
+            const data = {
+                accountNumber: accountNumber,
+                amount: amount
+            };
+        
+            $.ajax({
+                url: '@Url.Action("Transfer", "Transaction")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data), 
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload(); 
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (error) {
+                    alert("Произошла ошибка при отправке данных.");
+                }
+            });
+        }
+
+    </script>
+}
