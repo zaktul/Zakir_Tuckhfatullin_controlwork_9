@@ -1,0 +1,49 @@
+﻿@model List<Transaction>
+@{
+    ViewBag.Title = "История транзакций";
+}
+
+<h2>История транзакций</h2>
+
+<form method="get" asp-action="History">
+    <div class="form-group">
+        <label for="fromDate">Дата с</label>
+        <input type="date" id="fromDate" name="fromDate" class="form-control" value="@ViewData["FromDate"]" />
+    </div>
+    <div class="form-group">
+        <label for="toDate">Дата по</label>
+        <input type="date" id="toDate" name="toDate" class="form-control" value="@ViewData["ToDate"]" />
+    </div>
+    <button type="submit" class="btn btn-primary">Фильтровать</button>
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Дата</th>
+        <th>Сумма</th>
+        <th>Отправитель</th>
+        <th>Получатель</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var transaction in Model)
+    {
+        <tr>
+            <td>@transaction.Date</td>
+            <td>@transaction.Amount</td>
+            <td>
+                @if (transaction.Sender != null)
+                {
+                    <span>@transaction.Sender.AccountNumber</span>
+                }
+                else
+                {
+                    <span>Анонимный пополнитель</span>
+                }
+            </td>
+            <td>@transaction.Reciever.AccountNumber</td>
+        </tr>
+    }
+    </tbody>
+</table>

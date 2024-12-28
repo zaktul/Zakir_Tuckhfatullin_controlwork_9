@@ -1,0 +1,41 @@
+﻿@model Transaction
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Пополнение счёта</h2>
+
+<div class="phone_add_form col-md-6">
+
+    <form asp-action="Transfer" asp-controller="Transaction" method="post" enctype="multipart/form-data">
+        
+        <div class="form_row">
+            <label for="">
+                Номер аккаунта
+                <textarea asp-for="AccountNumber" type="text"></textarea>
+            </label>
+            <span asp-validation-for="AccountNumber"></span>
+        </div>
+
+        <div class="form_row">
+            <label for="">
+                Сумма пополнения
+                <input asp-for="Amount" type="text">
+            </label>
+            <span asp-validation-for="Amount"></span>
+        </div>
+
+        <button type="submit">Создать</button>
+
+    </form>
+
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
