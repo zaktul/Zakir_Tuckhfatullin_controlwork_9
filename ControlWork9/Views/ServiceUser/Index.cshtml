@@ -1,0 +1,93 @@
+﻿@model List<ControlWork9.Models.ServiceUser>
+
+@{
+    ViewBag.Title = "Мои сервисные аккаунты";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <h1>Мои сервисные аккаунты</h1>
+
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Сервис</th>
+                <th>Номер аккаунта</th>
+                <th>Баланс</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                foreach (var account in Model)
+                {
+                    <tr>
+                        <td>@account.Id</td>
+                        <td>@account.SomeProvider.Name</td>
+                        <td>@account.AccountNumber</td>
+                        <td>@account.Balance</td>
+                        <td>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transferModal-@account.Id">
+                                Перевести деньги
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    <!-- Модальное окно для перевода денег -->
+                    <div class="modal fade" id="transferModal-@account.Id" tabindex="-1" aria-labelledby="transferModalLabel-@account.Id" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="transferModalLabel-@account.Id">Перевести деньги на @account.SomeProvider.Name</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="number" id="transferAmount-@account.Id" class="form-control" placeholder="Введите сумму перевода">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <button type="button" class="btn btn-success" onclick="transferToAccount(@account.Id)">Перевести</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center">У вас нет сервисных аккаунтов.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function transferToAccount(accountId) {
+            const amount = parseFloat(document.getElementById('transferAmount-' + accountId).value);
+
+            if (isNaN(amount) || amount <= 0) {
+                alert("Введите корректную сумму.");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("TransferToAccount", "ServiceUser")',
+                type: 'POST',
+                data: { accountId: accountId, amount: amount },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        }
+    </script>
+}
