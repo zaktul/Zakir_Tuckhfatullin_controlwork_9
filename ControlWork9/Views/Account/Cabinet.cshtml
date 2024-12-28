@@ -1,0 +1,23 @@
+﻿@model User
+
+@{
+    Layout = "_Layout";
+}
+
+<h2>ViewData["Title"]</h2>
+
+<div class="col border mb-4">
+    <div class="row">
+        <div class="col col-2">
+            <span class="text-primary d-block">@Model.Email</span>
+            <span class="text-primary d-block">@Model.AccountNumber</span>
+            <span class="text-primary d-block">@Model.Balance</span>
+        </div>
+        <div class="col col-10">
+            <form asp-action="DeleteSelf" asp-controller="Account" method="post">
+                <button type="submit" class="btn btn-danger">Удалить аккаунт</button>
+            </form>
+            <a class="btn btn-warning" asp-action="Edit" asp-controller="Account">Редактировать</a>
+        </div>
+    </div>
+</div>

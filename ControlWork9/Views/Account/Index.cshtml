@@ -1,0 +1,41 @@
+﻿@model List<User>
+
+@{
+    Layout = "_Layout";
+}
+
+<h2>ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Номер кошелька</th>
+            <th>Баланс</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.AccountNumber</td>
+                <td>@user.Balance</td>
+                <th>
+                    @if (ViewBag.userRole == "admin")
+                    {
+                        <form asp-action="Delete" asp-controller="Account" method="post">
+                            <input type="hidden" name="userid" value="@user.Id"/>
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span>Нет доступа</span>
+                    }
+                </th>
+            </tr>
+        }
+    </tbody>
+</table>
